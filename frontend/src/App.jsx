@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import './App.css'
 
-const API = 'http://localhost:5050'
+const API = ''
 const REFRESH_MS = 30_000
 
 function fmt(val, decimals = 2) {
