@@ -53,6 +53,24 @@ def today():
         return jsonify({"error": str(e)}), e.status_code
 
 
+@app.route("/api/min-soc")
+def min_soc():
+    """Return the minimum state of charge from the last 24 hours."""
+    try:
+        measurements = client.get_measurements_last_n_days(1)
+        with_soc = [m for m in measurements if m.get("state_of_charge_percent") is not None]
+        if not with_soc:
+            return jsonify({"error": "No state of charge data available for the last 24 hours"}), 404
+        min_m = min(with_soc, key=lambda m: m["state_of_charge_percent"])
+        return jsonify({
+            "min_state_of_charge_percent": min_m["state_of_charge_percent"],
+            "period_start": min_m["period_start"],
+            "period_end": min_m["period_end"],
+        })
+    except GridleAPIError as e:
+        return jsonify({"error": str(e)}), e.status_code
+
+
 if __name__ == "__main__":
     print("Gridle API server running at http://localhost:5050")
     app.run(port=5050, debug=True)

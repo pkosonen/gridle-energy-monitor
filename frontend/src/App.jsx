@@ -48,6 +48,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError]     = useState(null)
   const [updatedAt, setUpdatedAt] = useState(null)
+  const [minSoc, setMinSoc]   = useState(null)
 
   const fetchLatest = useCallback(async () => {
     setLoading(true)
@@ -67,11 +68,19 @@ export default function App() {
     }
   }, [])
 
+  const fetchMinSoc = useCallback(async () => {
+    try {
+      const res = await fetch(`${API}/api/min-soc`)
+      if (res.ok) setMinSoc(await res.json())
+    } catch (_) {}
+  }, [])
+
   useEffect(() => {
     fetchLatest()
-    const id = setInterval(fetchLatest, REFRESH_MS)
+    fetchMinSoc()
+    const id = setInterval(() => { fetchLatest(); fetchMinSoc() }, REFRESH_MS)
     return () => clearInterval(id)
-  }, [fetchLatest])
+  }, [fetchLatest, fetchMinSoc])
 
   const soc  = data?.state_of_charge_percent
   const spot = data?.spot_price_cents_per_kwh
@@ -195,6 +204,19 @@ export default function App() {
             {data.period_end?.replace('T', ' ').replace('Z', ' UTC')}
           </p>
         </>
+      )}
+
+      {minSoc && (
+        <div className="min-soc-card">
+          <p className="section-title">Minimum SoC for the last 24 hours</p>
+          <div className="min-soc-value">{minSoc.min_state_of_charge_percent.toFixed(1)} %</div>
+          <div className="soc-bar-wrap">
+            <div className="soc-bar-fill" style={{ width: `${minSoc.min_state_of_charge_percent}%` }} />
+          </div>
+          <div className="min-soc-time">
+            {minSoc.period_start.replace('T', ' ').replace('+00:00', ' UTC')}
+          </div>
+        </div>
       )}
     </div>
   )

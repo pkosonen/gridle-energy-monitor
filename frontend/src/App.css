@@ -179,3 +179,24 @@
   color: var(--muted);
   text-align: center;
 }
+
+/* ── Min SoC card ───────────────────────────────────────────────────── */
+.min-soc-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 16px;
+  margin-top: 12px;
+}
+.min-soc-value {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--battery);
+  margin-bottom: 10px;
+}
+.min-soc-time {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
