@@ -131,7 +131,18 @@ if __name__ == "__main__":
     import json
     import os
 
-    API_KEY = os.getenv("GRIDLE_API_KEY", "rtD5RveEp41L1rB6F4v572QnKrWKiIg86Vln2qCz")
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.exists(env_path):
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, _, value = line.partition("=")
+                    os.environ.setdefault(key.strip(), value.strip())
+
+    API_KEY = os.getenv("GRIDLE_API_KEY")
+    if not API_KEY:
+        raise SystemExit("Error: GRIDLE_API_KEY environment variable is not set")
     client = GridleClient(api_key=API_KEY)
 
     print("Fetching today's measurements …")

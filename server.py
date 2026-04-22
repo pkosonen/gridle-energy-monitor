@@ -7,7 +7,23 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from gridle_client import GridleClient, GridleAPIError
 
-API_KEY = os.getenv("GRIDLE_API_KEY", "rtD5RveEp41L1rB6F4v572QnKrWKiIg86Vln2qCz")
+
+def _load_dotenv():
+    env_path = os.path.join(os.path.dirname(__file__), ".env")
+    if os.path.exists(env_path):
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, _, value = line.partition("=")
+                    os.environ.setdefault(key.strip(), value.strip())
+
+
+_load_dotenv()
+
+API_KEY = os.getenv("GRIDLE_API_KEY")
+if not API_KEY:
+    raise RuntimeError("GRIDLE_API_KEY environment variable is not set")
 
 app = Flask(__name__)
 CORS(app)
