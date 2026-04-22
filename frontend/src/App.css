@@ -1,0 +1,181 @@
+/* ── Layout ─────────────────────────────────────────────────────────── */
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--text);
+}
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.timestamp {
+  font-size: 13px;
+  color: var(--muted);
+}
+.refresh-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.refresh-btn:hover { background: var(--border); }
+.refresh-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* ── Status / error banner ──────────────────────────────────────────── */
+.banner {
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+.banner.error { background: #2d1a1a; border: 1px solid #7f2020; color: #f87171; }
+.banner.loading { background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+
+/* ── Section title ──────────────────────────────────────────────────── */
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* ── Power cards grid ───────────────────────────────────────────────── */
+.power-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+@media (max-width: 700px) {
+  .power-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.power-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 16px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.power-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent-color);
+  border-radius: 12px 12px 0 0;
+}
+.card-icon { font-size: 20px; margin-bottom: 10px; }
+.card-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.card-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--accent-color);
+  line-height: 1;
+}
+.card-unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 2px;
+}
+
+/* ── Two-column lower section ───────────────────────────────────────── */
+.lower {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 700px) {
+  .lower { grid-template-columns: 1fr; }
+}
+
+/* ── Flow table ─────────────────────────────────────────────────────── */
+.flow-card, .stats-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 16px;
+}
+
+.flow-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.flow-row:last-child { border-bottom: none; }
+.flow-label { color: var(--muted); }
+.flow-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.flow-value.active { color: var(--positive); }
+.flow-value.zero   { color: var(--muted); }
+
+/* ── Stats ──────────────────────────────────────────────────────────── */
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-label { color: var(--muted); }
+.stat-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.soc-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: var(--surface2);
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.soc-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--battery);
+  transition: width 0.6s ease;
+}
+
+/* ── Period label ───────────────────────────────────────────────────── */
+.period {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+}
