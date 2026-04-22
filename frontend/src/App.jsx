@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import './App.css'
 
 const API = ''
-const REFRESH_MS = 30_000
+const REFRESH_MS = 60 * 60 * 1000
 
 function fmt(val, decimals = 2) {
   if (val == null) return '—'
