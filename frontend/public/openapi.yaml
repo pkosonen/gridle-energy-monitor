@@ -1,0 +1,182 @@
+openapi: 3.1.0
+
+info:
+  title: Gridle Energy Monitor API
+  version: 0.1.0
+
+servers:
+  - url: https://gridle-energy-monitor.vercel.app
+    description: Production
+  - url: http://localhost:5050
+    description: Local Flask dev server
+
+paths:
+  /api/latest:
+    get:
+      summary: Latest measurement
+      description: Returns the single most recent 5-minute measurement from today (UTC).
+      responses:
+        '200':
+          description: Most recent measurement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Measurement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/today:
+    get:
+      summary: All measurements today
+      description: Returns all 5-minute measurements from midnight UTC until now.
+      responses:
+        '200':
+          description: Array of measurements, oldest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Measurement'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/min-soc:
+    get:
+      summary: Minimum state of charge in the last 24 hours
+      description: >
+        Scans all 5-minute measurements from the last 24 hours and returns the
+        lowest recorded state_of_charge_percent together with the period it
+        occurred in. Useful for tracking how deeply the battery was drained
+        overnight.
+      responses:
+        '200':
+          description: Minimum SoC reading
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MinSoC'
+        '404':
+          description: No measurements with a state_of_charge_percent value found in the last 24 hours
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Measurement:
+      type: object
+      properties:
+        period_start:
+          type: string
+          format: date-time
+          example: '2026-04-22T08:00:00+00:00'
+        period_end:
+          type: string
+          format: date-time
+          example: '2026-04-22T08:05:00+00:00'
+        battery_power_kw:
+          type: number
+          nullable: true
+        solar_power_kw:
+          type: number
+          nullable: true
+        grid_power_kw:
+          type: number
+          nullable: true
+        house_power_kw:
+          type: number
+          nullable: true
+        solar_array_1_power_kw:
+          type: number
+          nullable: true
+        solar_array_2_power_kw:
+          type: number
+          nullable: true
+        solar_to_house_kw:
+          type: number
+          nullable: true
+        solar_to_battery_kw:
+          type: number
+          nullable: true
+        solar_to_grid_kw:
+          type: number
+          nullable: true
+        grid_to_house_kw:
+          type: number
+          nullable: true
+        grid_to_battery_kw:
+          type: number
+          nullable: true
+        battery_to_house_kw:
+          type: number
+          nullable: true
+        battery_to_grid_kw:
+          type: number
+          nullable: true
+        state_of_charge_percent:
+          type: number
+          minimum: 0
+          maximum: 100
+          nullable: true
+          example: 72.5
+        spot_price_cents_per_kwh:
+          type: number
+          nullable: true
+          example: 4.321
+        battery_temperature_celsius:
+          type: number
+          nullable: true
+          example: 23.4
+
+    MinSoC:
+      type: object
+      required:
+        - min_state_of_charge_percent
+        - period_start
+        - period_end
+      properties:
+        min_state_of_charge_percent:
+          type: number
+          minimum: 0
+          maximum: 100
+          example: 18.3
+          description: The lowest state_of_charge_percent recorded in the last 24 hours.
+        period_start:
+          type: string
+          format: date-time
+          example: '2026-04-22T03:15:00+00:00'
+          description: Start of the 5-minute interval in which the minimum occurred.
+        period_end:
+          type: string
+          format: date-time
+          example: '2026-04-22T03:20:00+00:00'
+          description: End of the 5-minute interval in which the minimum occurred.
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: No data available for the last 24 hours
+
+  responses:
+    NotFound:
+      description: No data found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Server or upstream API error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
